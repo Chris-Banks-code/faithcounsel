@@ -1,21 +1,79 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { mockListings, US_STATES, SPECIALTIES } from "@/lib/data";
+import { US_STATES } from "@/lib/data";
+
+function slugify(name: string, city: string, state: string): string {
+  const normalize = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  return `${normalize(name)}-${normalize(city)}-${normalize(state)}`;
+}
+
+interface Therapist {
+  id: string;
+  name: string;
+  credentials: string | null;
+  city: string;
+  state: string;
+  phone: string | null;
+  website: string | null;
+  specialties: string | null;
+  insurance: string | null;
+  telehealth: string;
+}
+
+interface Listing {
+  id: string;
+  slug: string;
+  name: string;
+  title: string;
+  specialty: string;
+  city: string;
+  state: string;
+  phone: string;
+  website?: string;
+  telehealth: boolean;
+  insurance: string[];
+}
 
 export default function SearchFilters() {
   const [state, setState] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [search, setSearch] = useState("");
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = useMemo(() => {
-    return mockListings.filter((listing) => {
-      if (state && listing.state !== state) return false;
-      if (specialty && !listing.specialty.toLowerCase().includes(specialty.toLowerCase())) return false;
-      if (search && !listing.name.toLowerCase().includes(search.toLowerCase())) return false;
-      return true;
-    });
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (state) params.set("state", state);
+    if (specialty) params.set("specialty", specialty);
+    if (search) params.set("search", search);
+
+    fetch(`/api/therapists?${params.toString()}`)
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data) {
+          const mapped: Listing[] = res.data.map((t: Therapist) => ({
+            id: t.id,
+            slug: slugify(t.name, t.city, t.state),
+            name: t.name,
+            title: t.credentials || "Therapist",
+            specialty: t.specialties || "",
+            city: t.city,
+            state: t.state,
+            phone: t.phone || "",
+            website: t.website || undefined,
+            telehealth: t.telehealth === "yes",
+            insurance: t.insurance
+              ? t.insurance.split(",").map((s) => s.trim()).filter(Boolean)
+              : [],
+          }));
+          setListings(mapped);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [state, specialty, search]);
 
   return (
@@ -39,23 +97,27 @@ export default function SearchFilters() {
             <option key={s} value={s}>{s}</option>
           ))}
         </select>
-        <select
+        <input
+          type="text"
+          placeholder="Filter by specialty..."
           value={specialty}
           onChange={(e) => setSpecialty(e.target.value)}
           className="border border-slate-200 rounded-lg px-4 py-2 text-slate-700 focus:outline-none focus:border-teal-400"
-        >
-          <option value="">All Specialties</option>
-          {SPECIALTIES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        />
       </div>
 
       {/* Results count */}
-      <p className="text-slate-500 text-sm mb-4">{filtered.length} therapist{filtered.length !== 1 ? "s" : ""} found</p>
+      {!loading && (
+        <p className="text-slate-500 text-sm mb-4">
+          {listings.length} therapist{listings.length !== 1 ? "s" : ""} found
+        </p>
+      )}
 
-      {/* Grid */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-16 text-slate-400">
+          <p>Loading listings...</p>
+        </div>
+      ) : listings.length === 0 ? (
         <div className="text-center py-16 text-slate-400">
           <p className="text-lg">No therapists found matching your criteria.</p>
           <button
@@ -67,7 +129,7 @@ export default function SearchFilters() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((listing) => (
+          {listings.map((listing) => (
             <Link
               key={listing.id}
               href={`/listings/${listing.slug}`}
@@ -78,13 +140,8 @@ export default function SearchFilters() {
                   <h3 className="font-bold text-slate-800 group-hover:text-teal-700 transition">{listing.name}</h3>
                   <p className="text-sm text-slate-500">{listing.title}</p>
                 </div>
-                {listing.rating && (
-                  <span className="bg-teal-50 text-teal-700 text-sm font-semibold px-2 py-1 rounded">
-                    ★ {listing.rating}
-                  </span>
-                )}
               </div>
-              <p className="text-sm text-slate-600 mb-3">{listing.specialty}</p>
+              <p className="text-sm text-slate-600 mb-3">{listing.specialty || "Faith-based therapy"}</p>
               <div className="text-sm text-slate-500">
                 <span>{listing.city}, {listing.state}</span>
                 {listing.telehealth && (

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { mockListings } from "@/lib/data";
+import { getTherapistBySlug, getAllTherapists } from "@/lib/therapists";
 import JsonLd from "@/components/JsonLd";
 
 interface Props {
@@ -8,22 +8,23 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return mockListings.map((listing) => ({ slug: listing.slug }));
+  const therapists = await getAllTherapists();
+  return therapists.map((t) => ({ slug: t.slug }));
 }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const listing = mockListings.find((l) => l.slug === slug);
+  const listing = await getTherapistBySlug(slug);
   if (!listing) return { title: "Not Found" };
   return {
-    title: `${listing.name} | ${listing.specialty} in ${listing.city}, ${listing.state}`,
-    description: `Find ${listing.name}, a ${listing.title} specializing in ${listing.specialty}. Located in ${listing.city}, ${listing.state}.`,
+    title: `${listing.name} | ${listing.specialty || "Therapist"} in ${listing.city}, ${listing.state}`,
+    description: `Find ${listing.name}, specializing in ${listing.specialty || "faith-based therapy"}. Located in ${listing.city}, ${listing.state}.`,
   };
 }
 
 export default async function ListingPage({ params }: Props) {
   const { slug } = await params;
-  const listing = mockListings.find((l) => l.slug === slug);
+  const listing = await getTherapistBySlug(slug);
   if (!listing) notFound();
 
   const jsonLd = {
@@ -33,10 +34,8 @@ export default async function ListingPage({ params }: Props) {
     description: listing.specialty,
     address: {
       "@type": "PostalAddress",
-      streetAddress: listing.address,
       addressLocality: listing.city,
       addressRegion: listing.state,
-      postalCode: listing.zip,
       addressCountry: "US",
     },
     telephone: listing.phone,
@@ -64,15 +63,17 @@ export default async function ListingPage({ params }: Props) {
             )}
           </div>
 
-          <div className="border-t border-slate-100 pt-4 mb-4">
-            <p className="text-slate-700 font-medium mb-2">Specialties</p>
-            <p className="text-slate-600">{listing.specialty}</p>
-          </div>
+          {listing.specialty && (
+            <div className="border-t border-slate-100 pt-4 mb-4">
+              <p className="text-slate-700 font-medium mb-2">Specialties</p>
+              <p className="text-slate-600">{listing.specialty}</p>
+            </div>
+          )}
 
           <div className="border-t border-slate-100 pt-4 mb-4">
             <p className="text-slate-700 font-medium mb-2">Location</p>
             <p className="text-slate-600">
-              {listing.address}, {listing.city}, {listing.state} {listing.zip}
+              {listing.city}, {listing.state}
             </p>
           </div>
 
@@ -92,9 +93,6 @@ export default async function ListingPage({ params }: Props) {
           </div>
 
           <div className="flex flex-wrap gap-2 border-t border-slate-100 pt-4">
-            {listing.accepting_new && (
-              <span className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full">✓ Accepting new patients</span>
-            )}
             {listing.telehealth && (
               <span className="bg-blue-50 text-blue-700 text-sm px-3 py-1 rounded-full">✓ Telehealth available</span>
             )}
@@ -103,7 +101,19 @@ export default async function ListingPage({ params }: Props) {
                 Insurance: {listing.insurance.join(", ")}
               </span>
             )}
+            {listing.session_rate && listing.session_rate !== "unavailable" && (
+              <span className="bg-green-50 text-green-700 text-sm px-3 py-1 rounded-full">
+                Session rate: {listing.session_rate}
+              </span>
+            )}
           </div>
+
+          {listing.bio && (
+            <div className="border-t border-slate-100 pt-4 mt-4">
+              <p className="text-slate-700 font-medium mb-2">About</p>
+              <p className="text-slate-600">{listing.bio}</p>
+            </div>
+          )}
         </div>
 
         <p className="text-slate-400 text-xs mt-6 text-center">
