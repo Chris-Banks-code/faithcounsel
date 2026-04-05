@@ -19,7 +19,15 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        {/* Google Analytics — replace G-XXXXXXXXXX with actual Measurement ID */}
+
+        {/* Google AdSense */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8175258966126395"
+          strategy="beforeInteractive"
+          crossOrigin="anonymous"
+        />
+
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
           strategy="afterInteractive"
