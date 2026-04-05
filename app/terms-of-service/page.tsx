@@ -37,6 +37,13 @@ export default function TermsOfServicePage() {
           FaithCounsel is not liable for any damages arising from your use of this directory or your
           interactions with listed professionals.
         </p>
+        <h2 className="text-xl font-semibold text-slate-800 mt-6">Contact</h2>
+        <p>
+          For questions about these terms, contact us at:{" "}
+          <a href="mailto:faithcounsel.directory@gmail.com" className="text-teal-700 hover:underline">
+            faithcounsel.directory@gmail.com
+          </a>
+        </p>
         <h2 className="text-xl font-semibold text-slate-800 mt-6">Changes</h2>
         <p>
           We may update these terms at any time. Continued use of the site constitutes acceptance of

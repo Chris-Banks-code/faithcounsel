@@ -35,7 +35,10 @@ export default function PrivacyPolicyPage() {
         </p>
         <h2 className="text-xl font-semibold text-slate-800 mt-6">Contact</h2>
         <p>
-          For privacy-related questions, contact us through our available channels.
+          For privacy-related questions, contact us at:{" "}
+          <a href="mailto:faithcounsel.directory@gmail.com" className="text-teal-700 hover:underline">
+            faithcounsel.directory@gmail.com
+          </a>
         </p>
       </div>
     </div>
