@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +8,8 @@ export async function GET(request: Request) {
   const state = searchParams.get("state") || undefined;
   const specialty = searchParams.get("specialty") || undefined;
   const search = searchParams.get("search") || undefined;
+
+  const supabase = getSupabase();
 
   let query = supabase
     .from("therapists")

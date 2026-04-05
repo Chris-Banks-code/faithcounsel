@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export interface Therapist {
   id: string;
@@ -72,7 +72,7 @@ function mapToListing(t: Therapist): TherapistListing {
 }
 
 export async function getAllTherapists(): Promise<TherapistListing[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("therapists")
     .select("*")
     .order("name");
@@ -86,7 +86,7 @@ export async function getAllTherapists(): Promise<TherapistListing[]> {
 }
 
 export async function getTherapistBySlug(slug: string): Promise<TherapistListing | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("therapists")
     .select("*")
     .order("name");
@@ -111,7 +111,7 @@ export async function searchTherapists(
   specialty?: string,
   search?: string
 ): Promise<TherapistListing[]> {
-  let query = supabase.from("therapists").select("*").order("name");
+  let query = getSupabase().from("therapists").select("*").order("name");
 
   if (state) {
     query = query.eq("state", state);
