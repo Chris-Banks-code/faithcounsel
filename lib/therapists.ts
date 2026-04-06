@@ -42,7 +42,7 @@ export interface TherapistListing {
   session_rate?: string;
 }
 
-function slugify(name: string, city: string, state: string): string {
+export function slugify(name: string, city: string, state: string): string {
   const normalize = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
   return `${normalize(name)}-${normalize(city)}-${normalize(state)}`;
@@ -104,6 +104,26 @@ export async function getTherapistBySlug(slug: string): Promise<TherapistListing
 export async function getFeaturedTherapists(limit = 6): Promise<TherapistListing[]> {
   const all = await getAllTherapists();
   return all.slice(0, limit);
+}
+
+export async function getNearbyTherapists(
+  state: string,
+  excludeSlug: string,
+  limit = 3
+): Promise<TherapistListing[]> {
+  const { data, error } = await getSupabase()
+    .from("therapists")
+    .select("*")
+    .eq("state", state)
+    .order("name")
+    .limit(limit + 1);
+
+  if (error) return [];
+
+  return (data as Therapist[])
+    .map(mapToListing)
+    .filter((t) => t.slug !== excludeSlug)
+    .slice(0, limit);
 }
 
 export async function searchTherapists(

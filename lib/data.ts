@@ -208,3 +208,42 @@ export const SPECIALTIES = [
   "Addiction Recovery", "Grief & Loss", "Couples Therapy", "OCD",
   "Panic Disorder", "Adolescent Therapy", "Life Transitions"
 ];
+
+export const STATE_NAMES: Record<string, string> = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas",
+  CA: "California", CO: "Colorado", CT: "Connecticut", DE: "Delaware",
+  FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho",
+  IL: "Illinois", IN: "Indiana", IA: "Iowa", KS: "Kansas",
+  KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
+  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi",
+  MO: "Missouri", MT: "Montana", NE: "Nebraska", NV: "Nevada",
+  NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York",
+  NC: "North Carolina", ND: "North Dakota", OH: "Ohio", OK: "Oklahoma",
+  OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina",
+  SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah",
+  VT: "Vermont", VA: "Virginia", WA: "Washington", WV: "West Virginia",
+  WI: "Wisconsin", WY: "Wyoming",
+};
+
+// slug ("new-york") → abbreviation ("NY")
+export const STATE_ABBREV: Record<string, string> = Object.fromEntries(
+  Object.entries(STATE_NAMES).map(([abbrev, name]) => [
+    name.toLowerCase().replace(/\s+/g, "-"),
+    abbrev,
+  ])
+);
+
+export const SPECIALTY_LIST = [
+  { slug: "anxiety",              label: "Anxiety",            query: "Anxiety" },
+  { slug: "depression",           label: "Depression",         query: "Depression" },
+  { slug: "trauma",               label: "Trauma",             query: "Trauma" },
+  { slug: "ptsd",                 label: "PTSD",               query: "PTSD" },
+  { slug: "marriage-and-family",  label: "Marriage & Family",  query: "Marriage" },
+  { slug: "addiction-recovery",   label: "Addiction Recovery", query: "Addiction" },
+  { slug: "grief-and-loss",       label: "Grief & Loss",       query: "Grief" },
+  { slug: "couples-therapy",      label: "Couples Therapy",    query: "Couples" },
+  { slug: "ocd",                  label: "OCD",                query: "OCD" },
+  { slug: "panic-disorder",       label: "Panic Disorder",     query: "Panic" },
+  { slug: "adolescent-therapy",   label: "Adolescent Therapy", query: "Adolescent" },
+  { slug: "life-transitions",     label: "Life Transitions",   query: "Life Transitions" },
+];
