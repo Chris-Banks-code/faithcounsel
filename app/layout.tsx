@@ -35,6 +35,14 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
 
+        {/* Ahrefs Analytics */}
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="i2mIEfNEy9eIZUntsatwiw"
+          strategy="afterInteractive"
+          async
+        />
+
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
