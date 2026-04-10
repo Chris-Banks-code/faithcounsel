@@ -34,7 +34,8 @@ export default function AboutPage() {
         </p>
         <h2 className="text-xl font-semibold text-slate-800 mt-6">Contact</h2>
         <p>
-          To submit a listing or report incorrect information, please reach out via our contact channels.
+          To submit a listing, update information, or ask a general question, visit our{" "}
+          <Link href="/contact" className="text-teal-700 underline hover:text-teal-800">contact page</Link>.
         </p>
       </div>
       <div className="mt-8">

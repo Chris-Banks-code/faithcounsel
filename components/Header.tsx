@@ -92,6 +92,9 @@ export default function Header() {
           <Link href="/about" className="hover:text-teal-700 transition">
             About
           </Link>
+          <Link href="/contact" className="hover:text-teal-700 transition">
+            Contact
+          </Link>
         </nav>
 
         {/* Mobile hamburger */}
@@ -131,6 +134,7 @@ export default function Header() {
             ))}
             <Link href="/blog" className="py-2 hover:text-teal-700 mt-2" onClick={() => setMenuOpen(false)}>Blog</Link>
             <Link href="/about" className="py-2 hover:text-teal-700" onClick={() => setMenuOpen(false)}>About</Link>
+            <Link href="/contact" className="py-2 hover:text-teal-700" onClick={() => setMenuOpen(false)}>Contact</Link>
           </nav>
         </div>
       )}

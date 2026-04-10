@@ -68,6 +68,7 @@ export default function Footer() {
               <li><Link href="/blog" className="text-sm text-slate-400 hover:text-teal-400 transition">Blog</Link></li>
               <li><Link href="/search" className="text-sm text-slate-400 hover:text-teal-400 transition">Find a Therapist</Link></li>
               <li><Link href="/about" className="text-sm text-slate-400 hover:text-teal-400 transition">About</Link></li>
+              <li><Link href="/contact" className="text-sm text-slate-400 hover:text-teal-400 transition">Contact</Link></li>
             </ul>
             <h3 className="text-white font-semibold text-sm mb-3 mt-6">Legal</h3>
             <ul className="space-y-1.5">
